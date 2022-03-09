@@ -14,3 +14,18 @@ para que me haga una suma
 - **Mobile Backend as a Service:** La aplicacion es solo una interfaz, lo tocho lo hace
 el backend en un servidor
 - **Big Data:** Plataforma nativa para su uso: Cloud
+- Cloud no impone requisitos especiales para el hardware
+- Balanceador de carga esencial para la escalabilidad
+- 
+
+---
+- 5 carateristicas del CC
+
+
+
+
+
+---
+
+## Practica 1
+Servicio de monitorización
