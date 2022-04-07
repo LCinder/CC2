@@ -18,11 +18,15 @@ el backend en un servidor
 - Cloud no impone requisitos especiales para el hardware
 - Balanceador de carga esencial para la escalabilidad
 
+
 ### Docker
 - Un contenedor es una uniidad software, que se ejecuta en una infraestructura, fisica -pc-
-o virtual -maquina virtual-
-- 
+o virtual -maquina virtual- 
 
+## Tema 2
+- Nodo: Elemento capaz de manejar protocolos de comunicación: TCP/IP
+- ACID: Se necesita garantizar consistencia: Transferencia bancaria
+- 
 
 ---
 - 5 carateristicas del CC
