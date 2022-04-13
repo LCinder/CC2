@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 30s
+  scrape_interval: 20s
   scrape_timeout: 10s
 
 rule_files:
@@ -10,5 +10,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-        - 'prometheus:9090'
-        - 'idonotexists:564'
+          - "prometheus:9090"
+          - "prometheus_2:9090"
+          - "node-exporter:9100"
+          - "node-exporter_2:9100"
