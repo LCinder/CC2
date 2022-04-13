@@ -1,11 +1,25 @@
-version: '3'
+version: "3"
+
+networks:
+  frontend:
+  backend:
 
 services:
-  prometheus-server:
-    container_name: node-prom
-    image: prom/prometheus:v2.30.3
+
+  haproxy:
+    image: haproxy:1.6
+    volumes:
+      - ./haproxy:/haproxy-override
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
-      - 9090:9090
+      - "8080:80"
+    restart: always
+
+
+  prometheus:
+    image: prom/prometheus:v2.30.3
+    expose:
+      - "9090"
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
@@ -16,33 +30,66 @@ services:
       - "--web.console.libraries=/etc/prometheus/console_libraries"
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--storage.tsdb.retention.time=7d"
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      - haproxy
     deploy:
       replicas: 2
-    restart: always
+
+#  prometheus-server-2:
+#    image: prom/prometheus:v2.30.3
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./prometheus:/etc/prometheus
+#      - prometheus-data:/prometheus
+#    command:
+#      - "--web.enable-lifecycle"
+#      - "--config.file=/etc/prometheus/prometheus.yml"
+#      - "--storage.tsdb.path=/prometheus"
+#      - "--web.console.libraries=/etc/prometheus/console_libraries"
+#      - "--web.console.templates=/etc/prometheus/consoles"
+#      - "--storage.tsdb.retention.time=7d"
+#    restart: always
 
   grafana:
-    container_name: node-grafana
     image: grafana/grafana-oss
-    ports:
-      - 3000:3000
+    expose:
+      - "3000"
+    depends_on:
+      - haproxy
+    networks:
+      - backend
+      - frontend
+#    volumes:
+#      - /data/grafana_data:/var/lib/grafana
+#      - /data/certs:/certs
+#    env_file:
+#      - $PWD/data/grafana_conf/config.monitoring
+    deploy:
+      replicas: 2
     restart: always
 
   node-exporter:
-    container_name: node1-exporter
     image: prom/node-exporter
-    ports:
-      - 9100:9100
-    deploy:
-      replicas: 2
+    expose:
+      - "9100"
+    networks:
+      - backend
     restart: always
 
-  haproxy:
-    image: haproxy:1.6
-    volumes:
-      - ./haproxy:/haproxy-override
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    ports:
-      - 8080:80
+
+#  node-exporter-2:
+#    image: prom/node-exporter
+#    ports:
+#      - "9100:9100"
+#    restart: always
+#    depends_on:
+#      - haproxy
+
 
 volumes:
   prometheus-data:
+  #grafana-storage:
