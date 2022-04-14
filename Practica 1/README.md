@@ -42,7 +42,7 @@ se mantiene la fiabilidad del sistema y su funcionamiento.
 La configuración de prometheus, entre otros, incluye los sigueintes comandos:
   - `--storage.tsdb.retention.time=7d` que indica el tiempo en el que persisten las métricas
 guardadas, en este caso establecido a 7 días. Después de este período se borrarán
-  - `--storage.tsdb.no-lockfile` que inhabilita la creación de un archivo `*lock` que hace que falle
+  - `--storage.tsdb.no-lockfile` que inhabilita la creación de un archivo `*.lock` que hace que falle
   un contenedor cuando se crean réplicas del servicio
 
 
@@ -56,22 +56,14 @@ visualizarlos, compararlos, etc. Se trata también de código abierto, y su func
 prometheus, permitiendo crear paneles de visualización de datos y gráficas sobre métricas.
 En esta práctica, se crearán **2 servicios grafana** para comprobar que también se permite
  acceder a varias réplicas de este servicio.
-La forma de crear réplicas ha sido de la siguiente manera en el `docker-compose.yml`:
-```
-ports:
-      - "3000-3001:3000"
-...
 
-deploy:
-      replicas: 2
- ```
+De esta manera indicamos que se crearán 2 réplicas con la misma configuración indicada en el servicio.
+Se realiza entonces un `expose` del puerto que queremos que sea accedido, y al ser interno no habrá
+errores, ya que si hiciéramos un mapeo de puertos de la forma `ports: - 3000:3000` nos daría error
+en el segundo servicio ya que el primero está escuchando en ese puerto.
+De esta forma, la configuración de grafana queda:
 
-De esta manera indicamos que se crearán 2 réplicas con la misma configuración indicada en el servicio. 
-Sin embargo, se utilizará el mismo puerto, lo que dará error, ya que el puerto ya está escuchando,
-por lo que es necesario indicar un rango de puertos relacionado con el nº de réplicas, en este caso el primer
-servicio escuchará en el puerto 3000 y el otro servicio en el puerto 3001. Esto se realiza únicamente
-cuando se ha querido ver las métricas de grafana. En el caso de pasarlo a producción, se cambia la configuración
-de la siguiente manera:
+
 ```
 expose:
       - "3000"
@@ -160,7 +152,6 @@ nos muestra la interfaz de grafana, por lo que el funcionamiento es correcto.
 La configuración de `haproxy.cfg` es la siguiente:
 
 ```
-
 global
     debug
     maxconn 2000
@@ -186,18 +177,23 @@ backend d_backend
 ```
 
 
-Donde se ha establecido un frontend donde se mostrarán las estadísticas de las figuras anteriores.
+Se ha establecido un frontend donde se mostrarán las estadísticas de las figuras anteriores.
 Para el backend, se establece el modo de acceso a http necesario para que funcione, y se indican
-los 2 servidores para grafana, con el dominio y el puerto específicos
+los 2 servidores para grafana, con el dominio y el puerto específicos.
 
-El comando para levantar los servicios es: `docker-compose up --build`
-Se ha utilizado únicamente `docker-compose` debido a su sencillez en la creación de servicios
-y en la configuración de los mismos. Las opciones `option httpchk` y `check` son comprobaciones
+ Las opciones `option httpchk` y `check` son comprobaciones
 de que se puede realizar el acceso, ya que puede haber error de conexiones rechazadas en la capa L4 (de transporte)
 del firewall que proporciona HAProxy.
 
-
 ---
+
+El comando para levantar los servicios es: `docker-compose up --build`
+
+Se ha utilizado únicamente `docker-compose` debido a su sencillez en la creación de servicios
+y en la configuración de los mismos.
+
+***
+
 
 ### Conclusiones
 
@@ -207,7 +203,7 @@ además de entender diferentes propiedades de los servicios a priori con funcion
 y `expose.` 
 
 Además se ha entendido qué es un balanceador de carga, la importancia que tiene en temas de seguridad,
- su configuración, etc. En cuanto a las métricas, se ha entendido pará qué es necesario diferentes servicios como
+ su configuración, etc. En cuanto a las métricas, se ha entendido para qué es necesario diferentes servicios como
 grafana o node-exporter y su utilidad a la hora de monitorizar un sistema.
 
 Como conclusión final se obtiene que es necesario crear y configurar sistemas con disponibilidad,
