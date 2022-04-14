@@ -1,8 +1,8 @@
 
 
+---
 ## Práctica 1
 
----
 
 _Alumno: Diego Hernández Moreno_
 
@@ -90,7 +90,7 @@ En la siguiente imagen se muestra la estructura que tiene la composición de ser
 así como los puertos desde los que se puede acceder:
 
 
-![diagrama](img/practica1.png)
+![diagrama](img/practica1.png | width=100)
 
 Los puertos `expose` indican que son internos al contenedor (no accesibles desde fuera) y accesibles
 por los diferentes servicios dentro del contenedor. Es decir, únicamente se puede acceder a los servicios desde el puerto
