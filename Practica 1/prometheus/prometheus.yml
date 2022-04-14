@@ -11,6 +11,6 @@ scrape_configs:
     static_configs:
       - targets:
           - "prometheus:9090"
-          - "prometheus_2:9090"
+          - "prometheus_1:9090"
           - "node-exporter:9100"
-          - "node-exporter_2:9100"
+          - "node-exporter_1:9100"
