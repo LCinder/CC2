@@ -45,7 +45,12 @@ guardadas, en este caso establecido a 7 días. Después de este período se borr
   - `--storage.tsdb.no-lockfile` que inhabilita la creación de un archivo `*lock` que hace que falle
   un contenedor cuando se crean réplicas del servicio
 
-- **Grafana:**  Se trata de una plataforma de análisis de métricas para consultar datos,
+
+Además, se ha hecho necesario crear un volumen para _prometheus-data,_ ya que si se mantenía dentro del contenedor
+se obtenía un error con uno de los archivos que prometheus crea por defecto, siendo imposible solucionar el mismo
+y que originaba que _prometheus server_ obtuviera un error y se cerrase.
+
+- **Grafana:** Se trata de una plataforma de análisis de métricas para consultar datos,
 visualizarlos, compararlos, etc. Se trata también de código abierto, y su funcionalidad
  se ve muy extendida gracias a los múltiples _plugins_ de los que dispone, uno de ellos para 
 prometheus, permitiendo crear paneles de visualización de datos y gráficas sobre métricas.
@@ -76,6 +81,10 @@ deploy:
       replicas: 2
 ```
 
+Además, con la intención de no tener que incluir todos los dashboards cada vez que se levantan los servicios, 
+se ha creado un volumen para grafana que contiene todos los datos, ya que se han creado los dashboards y luego
+se han guardado. Así, cada vez que iniciamos, mantenemos los datos de grafana listos para observar las métricas.
+
 - **Node exporter:** Se trata de un _plugin_ de prometheus (una extensión) que permite obtener 
  datos y métricas del hardware y el sistema operativo. De esta manera, podremos visualizar en 
 grafana distintos datos, como la memoria utilizada, ..., etc.
@@ -86,11 +95,12 @@ la distribución de peticiones externas entre varios servidores, permitiendo man
 libre de errores, cuellos de botella y de esta manera mejorar la eficiencia del sistema.
 
 
+
 En la siguiente imagen se muestra la estructura que tiene la composición de servicios creados, 
 así como los puertos desde los que se puede acceder:
 
 
-![diagrama](img/practica1.png | width=100)
+![diagrama](img/practica1.png)
 
 Los puertos `expose` indican que son internos al contenedor (no accesibles desde fuera) y accesibles
 por los diferentes servicios dentro del contenedor. Es decir, únicamente se puede acceder a los servicios desde el puerto
@@ -130,9 +140,61 @@ Se han seleccionado estas métricas, pero se podrían haber elegido multitud de 
 la cantidad de métricas a obtener y mostrar es muy elevada y es constantemente actualizada.
 
 
+
+En la siguiente imagen se muestra cómo HAProxy funciona, permitiendo mostrar unas estadísticas sobre
+los servicios en ejecución (en este caso los 2 grafanas) e indicando su estado de funcionamiento.
+
+
+![haproxy](img/haproxy_funciona.PNG)
+
+
+Además vemos cómo si accedemos a `lcoalhost:8080` es decir, al puerto configurado para HAProxy, 
+nos muestra la interfaz de grafana, por lo que el funcionamiento es correcto.
+
+
+![haproxy_2](img/haproxy_funciona_2.PNG)
+
+
+
+
+La configuración de `haproxy.cfg` es la siguiente:
+
+```
+
+global
+    debug
+    maxconn 2000
+
+defaults
+    ...
+    mode http
+
+
+frontend frontend
+    bind *:80
+    default_backend d_backend
+    stats enable
+    stats uri /stats
+    stats admin if LOCALHOST
+
+backend d_backend
+    mode http
+    balance roundrobin
+    option httpchk
+    server grafana1 grafana:3000 check
+    server grafana2 grafana:3000 check
+```
+
+
+Donde se ha establecido un frontend donde se mostrarán las estadísticas de las figuras anteriores.
+Para el backend, se establece el modo de acceso a http necesario para que funcione, y se indican
+los 2 servidores para grafana, con el dominio y el puerto específicos
+
 El comando para levantar los servicios es: `docker-compose up --build`
 Se ha utilizado únicamente `docker-compose` debido a su sencillez en la creación de servicios
-y en la configuración de los mismos.
+y en la configuración de los mismos. Las opciones `option httpchk` y `check` son comprobaciones
+de que se puede realizar el acceso, ya que puede haber error de conexiones rechazadas en la capa L4 (de transporte)
+del firewall que proporciona HAProxy.
 
 
 ---
