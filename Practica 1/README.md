@@ -1,7 +1,7 @@
 
 
 ---
-## Práctica 1
+## Práctica 1: Desarrollo y despliegue de servicios de monitorización en Cloud Computing usando contenedores
 
 
 _Alumno: Diego Hernández Moreno_
@@ -57,13 +57,12 @@ prometheus, permitiendo crear paneles de visualización de datos y gráficas sob
 En esta práctica, se crearán **2 servicios grafana** para comprobar que también se permite
  acceder a varias réplicas de este servicio.
 
-De esta manera indicamos que se crearán 2 réplicas con la misma configuración indicada en el servicio.
-Se realiza entonces un `expose` del puerto que queremos que sea accedido, y al ser interno no habrá
-errores, ya que si hiciéramos un mapeo de puertos de la forma `ports: - 3000:3000` nos daría error
-en el segundo servicio ya que el primero está escuchando en ese puerto.
-De esta forma, la configuración de grafana queda:
-
-
+    De esta manera indicamos que se crearán 2 réplicas con la misma configuración indicada en el servicio.
+    Se realiza entonces un `expose` del puerto que queremos que sea accedido, y al ser interno no habrá
+    errores, ya que si hiciéramos un mapeo de puertos de la forma `ports: - 3000:3000` nos daría error
+    en el segundo servicio ya que el primero está escuchando en ese puerto.
+    De esta forma, la configuración de grafana queda:
+    
 ```
 expose:
       - "3000"
@@ -72,15 +71,15 @@ expose:
 deploy:
       replicas: 2
 ```
-
+    
 Además, con la intención de no tener que incluir todos los dashboards cada vez que se levantan los servicios, 
-se ha creado un volumen para grafana que contiene todos los datos, ya que se han creado los dashboards y luego
+se ha creado un volumen para grafana que contiene todos los datos, ya que se han importado los dashboards y luego
 se han guardado. Así, cada vez que iniciamos, mantenemos los datos de grafana listos para observar las métricas.
 
 - **Node exporter:** Se trata de un _plugin_ de prometheus (una extensión) que permite obtener 
  datos y métricas del hardware y el sistema operativo. De esta manera, podremos visualizar en 
-grafana distintos datos, como la memoria utilizada, ..., etc.
-En esta práctica, al igual que en los servicios anteriores, se crearán **2 servicios node-exporter.**
+grafana distintos datos, como la memoria utilizada, carga del sistema, RAM en uso, etc.
+En este caso, al igual que en los servicios anteriores, se crearán **2 servicios node-exporter**
 
 - **HAProxy:** Se trata de un balanceador de carga de código abierto y un proxy inverso para
 la distribución de peticiones externas entre varios servidores, permitiendo mantener una infraestructura
@@ -104,7 +103,7 @@ y que pueden ser visualizadas en **grafana.**
 
 
 Esta métrica proporcionada por **node-exporter** nos muestra distintas informaciones sobre
-el hardware, como el porcentaje de CPU ocupada, memoria usada, información sobre la red, etc.
+el hardware, como el porcentaje de CPU ocupada, memoria usada, e información sobre la red, entre otros muchos.
 
 
 
@@ -140,7 +139,7 @@ los servicios en ejecución (en este caso los 2 grafanas) e indicando su estado 
 ![haproxy](img/haproxy_funciona.PNG)
 
 
-Además vemos cómo si accedemos a `lcoalhost:8080` es decir, al puerto configurado para HAProxy, 
+Además vemos cómo si accedemos a `localhost:8080` es decir, al puerto configurado para HAProxy, 
 nos muestra la interfaz de grafana, por lo que el funcionamiento es correcto.
 
 
