@@ -100,11 +100,14 @@ Para ello nos descargamos los _templates_ de las funciones, que incluyen los dif
 
 En este caso utilizaremos python para crear la función. 
 Creamos una nueva función de la forma:
-`faas-cli new --lang python facesdetection-python`
+`faas-cli new --lang python3-debian facesdetection-python`
 
 Lo que nos creará diferentes archivos: un `requirements.txt` un archivo python llamado `handler.py` 
 donde definiremos la función y un archivo de tipo `.yml`
 para realizar el build y su despliegue.
+
+Se ha utilizado esta versión, ya que la de `python3` daba error al instalar `opencv-python`
+debido a configuraciones de versiones, mientras que en esta versión sí funciona correctamente.
 
 Definimos la función:
 
@@ -163,10 +166,11 @@ De esta manera se nos habrá creado una instancia en OpenPaaS de esa función:
 ![img/10.PNG](img/10.PNG)
 
 
-Ahora ya le podemos pasar una URL para que detecte las caras de la imagen pasada en el _body_:
-![img/11.PNG](img/11.PNG)
+Ahora ya le podemos pasar una URL cualquiera para que detecte las caras de la imagen pasada en el _body_:
+![img/captain.gif](img/captain.gif)
 
-
+Y se ve cómo detecta la cara perfectamente, aunque como lo que es devuelto es un tag de HTML
+es necesario darle a la opción _preview_ de Postman.
 
 
 
