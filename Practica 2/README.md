@@ -167,6 +167,14 @@ De esta manera se nos habrá creado una instancia en OpenPaaS de esa función:
 
 
 Ahora ya le podemos pasar una URL cualquiera para que detecte las caras de la imagen pasada en el _body_:
+
+![img/11.PNG](img/11.PNG)
+
+Pero nos devuelve la imagen en formato tag de HTML por lo que no se puede visualizar en el _dashboard_
+de OpenFaaS, siendo necesario ejecutarlo en Postman.
+
+Si lo realizamos en postman, obtenemos el siguiente resultado:
+
 ![img/captain.gif](img/captain.gif)
 
 Y se ve cómo detecta la cara perfectamente, aunque como lo que es devuelto es un tag de HTML
