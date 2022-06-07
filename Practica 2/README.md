@@ -166,6 +166,11 @@ De esta manera se nos habrá creado una instancia en OpenPaaS de esa función:
 ![img/10.PNG](img/10.PNG)
 
 
+En mi caso no se utiliza ninguna API externa para subir la imagen, sino que únicamente es 
+necesario indicar la dirección de una imagen en Internet y la función se encarga de obtenerla,
+codificarla, identificar las caras y devolverla codificada en base64, por lo que el usuario
+no tiene que realizar nada ma´s ni depender de otra API para la subida de imágenes.
+
 Ahora ya le podemos pasar una URL cualquiera para que detecte las caras de la imagen pasada en el _body_:
 
 ![img/11.PNG](img/11.PNG)
@@ -173,7 +178,7 @@ Ahora ya le podemos pasar una URL cualquiera para que detecte las caras de la im
 Pero nos devuelve la imagen en formato tag de HTML por lo que no se puede visualizar en el _dashboard_
 de OpenFaaS, siendo necesario ejecutarlo en Postman.
 
-Si lo realizamos en postman, obtenemos el siguiente resultado:
+Si lo realizamos en postman, obtenemos el siguiente resultado (puede tardar en cargar el video):
 
 ![img/captain.gif](img/captain.gif)
 
